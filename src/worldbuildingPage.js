@@ -41,17 +41,12 @@ const EntityList = (props) => {
     const [selectedIndex, setSelectedIndex] = React.useState();
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
-        console.log("EntityList->handleListItemClick CALLED");
         props.onSelect(props.items[index]);
     };
 
     // Default to Loading Message
     let result = (<div>Loading...</div>)
-    // Was there an error om the query?
-    if ( props.error ) {
-        result = (<div>{ props.error.message }</div>)
-    }
-    else if ( props.items ) {
+    if ( props.items ) {
         result = (
             <List>
                 {props.items.map((biome, index) => (
@@ -128,7 +123,6 @@ function  WorldbuildingSteps() {
     const [locationListExpanded, setLocationListExpanded] = React.useState(false);
 
     async function QueryGraph(query, params, set) {
-        console.log("QueryGraph CALLED");
         const session = driver.session();
         //const tx = session.beginTransaction();
     
@@ -160,7 +154,6 @@ function  WorldbuildingSteps() {
     const step2Query = queries.biomeStart.locations;
     // const step3Query = queries.biomeStart.result;
     // const step3Params = {biome:biomeName, location:"River"}
-    // const { step3Error, step3Records } = useReadCypher(step3Query, step3Params);
 
     const step1Items = step1Records?step1Records.map((biome) => (biome.get('n').properties.name)):[];
     const step2Items = step2Records?step2Records.map((location) => (location.get('n').properties.name)):[];
@@ -185,16 +178,15 @@ function  WorldbuildingSteps() {
                 <EntityList items={step2Items}/>
             </SingleStep>
             {/* <SingleStep title="Resulting World">
-                <EntityList records={step3Records} error={step3Error}/>
+                <EntityList records={step3Records}/>
             </SingleStep> */}
         </div>
     );
 }
 
 
-function WorldbuildingPage(props) {  
+function WorldbuildingPage() {  
     return (
-        //<TestFunct></TestFunct>
         <React.StrictMode>
             <Grid container justify="center">
                 <Grid item sm={10}>
@@ -204,39 +196,5 @@ function WorldbuildingPage(props) {
         </React.StrictMode>
     );
 }
-
-// class Form extends React.Component {
-// 	state = { userName: '' };
-// 	handleSubmit = async (event) => {
-//   	event.preventDefault();
-//     const resp = await axios.get(`https://api.github.com/users/${this.state.userName}`);
-//     this.props.onSubmit(resp.data);
-//     this.setState({ userName: '' });
-//   };
-// 	render() {
-//   	return (
-//     	<form onSubmit={this.handleSubmit}>
-//     	  <input 
-//           type="text" 
-//           value={this.state.userName}
-//           onChange={event => this.setState({ userName: event.target.value })}
-//           placeholder="GitHub username" 
-//           required 
-//         />
-//         <button>Add card</button>
-//     	</form>
-//     );
-//   }
-// }
-
-/* <Grid item sm={3}>
-    <input
-    type ="text"
-    value={creatureName}
-    onChange={event => setCreatureName(event.target.value)}></input>
-</Grid>
-<Grid item sm={1}>
-    <button onClick={submit}>Search</button>
-</Grid> */
 
 export default WorldbuildingPage;
