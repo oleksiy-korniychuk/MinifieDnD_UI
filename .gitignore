@@ -19,8 +19,7 @@
 .env.production.local
 
 # ides
-/.vscode
-/.idea
+/src/assets/.idea
 
 npm-debug.log*
 yarn-debug.log*
