@@ -1,9 +1,12 @@
 import csv
 
 # INPUTS
-inputfile = 'Creatures_Biome_Types_Locations.csv'
-creature_biome_file = 'Creatures_Biome.csv'
+creature_input_file = 'Creature_Biome_Type_Location.csv'
+location_input_file = 'Location.csv'
+# OUTPUTS
+creature_biome_file = 'Creature_Biome.csv'
 creature_location_file = 'Creature_Location.csv'
+location_biome_file = 'Location_Biome.csv'
 
 
 # CONSTANTS
@@ -47,12 +50,35 @@ def creature_location(inF, outF):
             #     break
             # else:
                 locations = row[Locations].split(', ')
+                exclusives = row[Exclusive].split(', ')
                 creature = row[Name]
                 myid = row[Id]
-                for location in locations:
-                    print(creature + ',' + location)
-                    writer.writerow([myid, creature, location])
+                for index, location in enumerate(locations):
+                    print(creature + ',' + location + ',' + exclusives[index])
+                    writer.writerow([myid, creature, location, exclusives[index]])
                 i+=1
 
-creature_biome(inputfile, creature_biome_file)
-#creature_location(inputfile, creature_location_file)
+def location_biome(inF, outF):
+    Id = 0
+    Name = 1
+    Biomes = 2
+    with open(inF, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        wriecsv = open(outF, 'w', newline='')
+        writer = csv.writer(wriecsv)
+        i = 0
+        for row in reader:
+            # if i == 10:
+            #     break
+            # else:
+                biomes = row[Biomes].split(', ')
+                location = row[Name]
+                myid = row[Id]
+                for biome in biomes:
+                    print(location + ',' + biome)
+                    writer.writerow([myid, location, biome])
+                i+=1
+
+creature_biome(creature_input_file, creature_biome_file)
+creature_location(creature_input_file, creature_location_file)
+location_biome(location_input_file, location_biome_file)

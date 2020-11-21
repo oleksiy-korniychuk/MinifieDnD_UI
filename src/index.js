@@ -54,7 +54,7 @@ const Header = (props) => (
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit">
-              Welcome to Minifie<img src={dndLogo} id="dnd-logo" alt="DnD"/>!
+              Minifie<img src={dndLogo} id="dnd-logo" alt="DnD"/>!
             </Typography>
           </Toolbar>
         </AppBar>
