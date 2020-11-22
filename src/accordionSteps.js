@@ -11,26 +11,19 @@ import AccordionActions from '@material-ui/core/AccordionActions';
 import Typography from '@material-ui/core/Typography';
 
 function EntityList(props) {
-    const [selectedIndex, setSelectedIndex] = React.useState();
-    
-    const handleListItemClick = (event, index) => {
-        setSelectedIndex(index);
-        props.onSelect(props.items[index]);
-    };
-
     // Default to Loading Message
     let result = (<div>Loading...</div>)
     if ( props.items ) {
         result = (
             <List>
-                {props.items.map((biome, index) => (
+                {props.items.map((entity, index) => (
                     <ListItem
                         button
-                        selected={selectedIndex === index}
-                        onClick={(event) => handleListItemClick(event, index)}
-                        key={'biome'+index}
+                        selected={props.selectedIndex === index}
+                        onClick={() => props.onSelect(index)}
+                        key={entity+index}
                     >
-                        {biome}
+                        {entity}
                     </ListItem>
                 ))}
             </List>
@@ -46,7 +39,6 @@ function EntityList(props) {
 class SingleStep extends React.Component {
     constructor(props) {
         super(props);
-        this.wrapper = React.createRef();
     }
 
     componentDidMount() {
@@ -59,7 +51,6 @@ class SingleStep extends React.Component {
                 expanded={this.props.expanded}
                 disabled={this.props.disabled}
                 onChange={this.props.onChange}
-                ref={this.wrapper}
             >
                 <AccordionSummary>
                     <Typography>{this.props.title}</Typography>

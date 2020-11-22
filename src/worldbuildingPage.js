@@ -44,6 +44,10 @@ RETURN c3 AS creature
 function randomSubset(array, size) {
     let used = [], subset = [], index;
     const arrayLength = array.length;
+    if(size > arrayLength) {
+        console.log("ERROR: subset cannot be longer than array", array.length, size);
+        return;
+    }
     while(size > 0) {
         do {
             index = Math.floor(arrayLength*Math.random());
@@ -71,8 +75,8 @@ async function QueryGraph(query, params, onComplete) {
 }
 
 function  WorldbuildingSteps() {
-    const [selectedBiome, setSelectedBiome] = React.useState("");
-    const [selectedLocation, setSelectedLocation] = React.useState("");
+    const [selectedBiomeIndex, setSelectedBiomeIndex] = React.useState(null);
+    const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
     const [biomeListExpanded, setBiomeListExpanded] = React.useState(true);
     const [locationListExpanded, setLocationListExpanded] = React.useState(false);
     const [creatureListExpanded, setCreatureListExpanded] = React.useState(false);
@@ -99,56 +103,63 @@ function  WorldbuildingSteps() {
         let biomeList = step1Records?step1Records.map((biome) => (biome.get('biome').properties.name)):[];
         biomeList = randomSubset(biomeList, NUM_BIOMES);
         setStep1Items(biomeList);
-        setSelectedBiome("");
+        setSelectedBiomeIndex(null);
     }
     const getLocations = () => {
-        QueryGraph(step2Query, {biome: selectedBiome}, setLocations);
+        QueryGraph(step2Query, {biome: step1Items[selectedBiomeIndex]}, setLocations);
         collapseAll();
         setLocationListExpanded(true);
+        console.log("getLocations selectedBiomeIndex", selectedBiomeIndex);
     }
     const setLocations = (step2Records) => {
+        console.log("setLocations START", step2Records);
         let locationList = step2Records?step2Records.map((location) => (location.get('location').properties.name)):[];
         locationList = randomSubset(locationList, NUM_LOCATIONS);
         setStep2Items(locationList);
-        setSelectedLocation("");
+        setSelectedLocationIndex(null);
+        console.log("setLocations selectedBiomeIndex", selectedBiomeIndex);
     }
     const getCreatures = () => {
-        QueryGraph(step3Query, {biome: selectedBiome, location: selectedLocation}, setCreatures);
+        console.log("getCreatures START", step1Items, step2Items);
+        QueryGraph(step3Query, {biome: step1Items[selectedBiomeIndex], location: step2Items[selectedLocationIndex]}, setCreatures);
         collapseAll();
         setCreatureListExpanded(true);
+        console.log("getCreatures CALLED");
     }
     const setCreatures = (step3Records) => {
+        console.log("setCreatures START", step3Records);
         let creatureList = step3Records?step3Records.map((creature) => (creature.get('creature').properties)):[];
         creatureList = randomSubset(creatureList, NUM_CREATURES);
         setStep3Items(creatureList);
+        console.log("setCreatures CALLED");
     }
 
 
     return (
         <div>
             <SingleStep
-                title={"Select A Biome" + (selectedBiome?(": " + selectedBiome):"")}
+                title={"Select A Biome" + (step1Items[selectedBiomeIndex]?(": " + step1Items[selectedBiomeIndex]):"")}
                 expanded={biomeListExpanded}
                 onMount={getBiomes}
                 onSubmit={getLocations}
-                submitDisabled={selectedBiome === ""}
+                submitDisabled={selectedBiomeIndex === null}
             >
-                <EntityList items={step1Items} onSelect={setSelectedBiome}/>
+                <EntityList items={step1Items} selectedIndex={selectedBiomeIndex} onSelect={setSelectedBiomeIndex}/>
             </SingleStep>
             <SingleStep
-                title={"Select A Location" + (selectedLocation?(": " + selectedLocation):"")}
+                title={"Select A Location" + (step2Items[selectedLocationIndex]?(": " + step2Items[selectedLocationIndex]):"")}
                 expanded={locationListExpanded}
-                disabled={selectedBiome === ""}
+                disabled={selectedBiomeIndex === null}
                 onBack={() => {collapseAll(); setBiomeListExpanded(true);}}
                 onSubmit={getCreatures}
-                submitDisabled={selectedLocation === ""}
+                submitDisabled={selectedLocationIndex === null}
             >
-                <EntityList items={step2Items} onSelect={setSelectedLocation}/>
+                <EntityList items={step2Items} selectedIndex={selectedLocationIndex} onSelect={setSelectedLocationIndex}/>
             </SingleStep>
             <SingleStep
                 title="Available Creatures"
                 expanded={creatureListExpanded}
-                disabled={selectedLocation === ""}
+                disabled={selectedLocationIndex === null}
                 onBack={() => {collapseAll(); setLocationListExpanded(true);}}
             >
                 <Grid container spacing={1}>
@@ -160,10 +171,10 @@ function  WorldbuildingSteps() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Typography paragraph>
-                                        <div>Size: {creature.size}</div><br/>
-                                        <div>CR: {creature.cr}</div><br/>
-                                        <div>Alignment: {creature.alignment}</div><br/>
-                                        <div>Source: {creature.source}</div><br/>
+                                        <span>Size: {creature.size}</span><br/>
+                                        <span>CR: {creature.cr}</span><br/>
+                                        <span>Alignment: {creature.alignment}</span><br/>
+                                        <span>Source: {creature.source}</span><br/>
                                     </Typography>
                                 </AccordionDetails>
                             </Accordion>
