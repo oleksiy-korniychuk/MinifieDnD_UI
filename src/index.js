@@ -25,7 +25,7 @@ import {
   Route
 } from "react-router-dom";
 import { createBrowserHistory } from 'history';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { ThemeProvider, unstable_createMuiStrictModeTheme as createMuiTheme } from '@material-ui/core';
 
 const darkTheme = createMuiTheme({
   palette: {
@@ -46,7 +46,7 @@ const darkTheme = createMuiTheme({
 });
 
 const Header = (props) => (
-  <Grid container spacing={1} justify="center">
+  <Grid container justify="center">
       <Grid item xs={12} id="welcome-banner">
         <AppBar position="static">
           <Toolbar variant="dense">
@@ -63,7 +63,7 @@ const Header = (props) => (
 );
 
 const HomePage = (props) => (
-  <div>
+  <div style={{padding:4}}>
     <Grid container spacing={1} justify="center">
       <Grid item xs={10}>
         <Card>

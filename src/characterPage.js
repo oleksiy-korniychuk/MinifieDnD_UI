@@ -15,7 +15,7 @@ import Grid from '@material-ui/core/Grid'
 
 function CharacterPage(props) {
     return (
-        <Grid container item sm={10} spacing={1} justify="center">
+        <Grid container item spacing={1} justify="center" id="character-page">
           <Grid item sm={5} md={5} lg={3}>
             <CharacterCard profileImage={testImage2}/>
           </Grid>

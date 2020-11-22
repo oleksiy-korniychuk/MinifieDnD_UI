@@ -3,14 +3,10 @@ import './index.css';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionActions from '@material-ui/core/AccordionActions';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import SingleStep from './accordionSteps';
+import { EntityList } from './accordionSteps';
 
 const neo4j = require('neo4j-driver')
 const driver = neo4j.driver('bolt://minifiednd.com:7687', neo4j.auth.basic('neo4j', 'goblinMonkeyBaby'))
@@ -43,85 +39,6 @@ RETURN c3 AS creature
         biomes: '',
         result: ''
     }
-}
-
-const EntityList = (props) => {
-    const [selectedIndex, setSelectedIndex] = React.useState();
-    const handleListItemClick = (event, index) => {
-        setSelectedIndex(index);
-        props.onSelect(props.items[index]);
-    };
-
-    // Default to Loading Message
-    let result = (<div>Loading...</div>)
-    if ( props.items ) {
-        result = (
-            <List>
-                {props.items.map((biome, index) => (
-                    <ListItem
-                        button
-                        selected={selectedIndex === index}
-                        onClick={(event) => handleListItemClick(event, index)}
-                        key={'biome'+index}
-                    >
-                        {biome}
-                    </ListItem>
-                ))}
-            </List>
-        );
-    }
-    return (
-        <div>
-            {result}
-        </div>
-    );
-}
-
-class SingleStep extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        this.props.onMount();
-    }
-
-    render() {
-        return(
-            <Accordion
-                expanded={this.props.expanded}
-                disabled={this.props.disabled}
-                onChange={this.props.onChange}
-            >
-                <AccordionSummary>
-                    <Typography>{this.props.title}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {this.props.children}
-                </AccordionDetails>
-                <Divider />
-                <AccordionActions>
-                    {this.props.onBack?
-                    <Button size="small" onClick={this.props.onBack}>Back</Button>:<div/>
-                    }
-                    {this.props.onSubmit?
-                    <Button
-                        size="small"
-                        color="primary"
-                        onClick={this.props.onSubmit}
-                        disabled={this.props.submitDisabled}
-                    >Submit</Button>:<div/>
-                    }
-                </AccordionActions>
-            </Accordion>
-        );
-    }
-}
-
-SingleStep.defaultProps = {
-    expanded: false,
-    disabled: false,
-    onMount: () => {}
 }
 
 function randomSubset(array, size) {
@@ -167,36 +84,40 @@ function  WorldbuildingSteps() {
     const step2Query = queries.biomeStart.locations;
     const step3Query = queries.biomeStart.result;
 
-    const getBiomes = () => {
-        QueryGraph(step1Query, {}, setBiomes);
-        setBiomeListExpanded(true);
+
+    const collapseAll = () => {
+        setBiomeListExpanded(false);
         setLocationListExpanded(false);
         setCreatureListExpanded(false);
+    }
+    const getBiomes = () => {
+        QueryGraph(step1Query, {}, setBiomes);
+        collapseAll();
+        setBiomeListExpanded(true);
     }
     const setBiomes = (step1Records) => {
         let biomeList = step1Records?step1Records.map((biome) => (biome.get('biome').properties.name)):[];
         biomeList = randomSubset(biomeList, NUM_BIOMES);
         setStep1Items(biomeList);
+        setSelectedBiome("");
     }
     const getLocations = () => {
         QueryGraph(step2Query, {biome: selectedBiome}, setLocations);
-        setBiomeListExpanded(false);
+        collapseAll();
         setLocationListExpanded(true);
-        setCreatureListExpanded(false);
     }
     const setLocations = (step2Records) => {
         let locationList = step2Records?step2Records.map((location) => (location.get('location').properties.name)):[];
         locationList = randomSubset(locationList, NUM_LOCATIONS);
         setStep2Items(locationList);
+        setSelectedLocation("");
     }
     const getCreatures = () => {
         QueryGraph(step3Query, {biome: selectedBiome, location: selectedLocation}, setCreatures);
-        setBiomeListExpanded(false);
-        setLocationListExpanded(false);
+        collapseAll();
         setCreatureListExpanded(true);
     }
     const setCreatures = (step3Records) => {
-        console.log(step3Records);
         let creatureList = step3Records?step3Records.map((creature) => (creature.get('creature').properties)):[];
         creatureList = randomSubset(creatureList, NUM_CREATURES);
         setStep3Items(creatureList);
@@ -210,28 +131,29 @@ function  WorldbuildingSteps() {
                 expanded={biomeListExpanded}
                 onMount={getBiomes}
                 onSubmit={getLocations}
-                submitDisabled={selectedBiome == ""}
+                submitDisabled={selectedBiome === ""}
             >
                 <EntityList items={step1Items} onSelect={setSelectedBiome}/>
             </SingleStep>
             <SingleStep
                 title={"Select A Location" + (selectedLocation?(": " + selectedLocation):"")}
                 expanded={locationListExpanded}
-                disabled={selectedBiome == ""}
-                onBack={getBiomes}
+                disabled={selectedBiome === ""}
+                onBack={() => {collapseAll(); setBiomeListExpanded(true);}}
                 onSubmit={getCreatures}
+                submitDisabled={selectedLocation === ""}
             >
                 <EntityList items={step2Items} onSelect={setSelectedLocation}/>
             </SingleStep>
             <SingleStep
                 title="Available Creatures"
                 expanded={creatureListExpanded}
-                disabled={selectedLocation == ""}
-                onBack={getLocations}
+                disabled={selectedLocation === ""}
+                onBack={() => {collapseAll(); setLocationListExpanded(true);}}
             >
                 <Grid container spacing={1}>
                     {step3Items.map((creature, index) => (
-                        <Grid item sm={3}>
+                        <Grid item sm={3} key={'creature'+index}>
                             <Accordion>
                                 <AccordionSummary>
                                     <Typography>{creature.name}</Typography>
@@ -252,7 +174,6 @@ function  WorldbuildingSteps() {
         </div>
     );
 }
-
 
 function WorldbuildingPage() {  
     return (
