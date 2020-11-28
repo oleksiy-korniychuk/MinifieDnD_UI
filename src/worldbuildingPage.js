@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import SingleStep from './accordionSteps';
 import { EntityList } from './accordionSteps';
 
+// NEO4J DRIVER
 const neo4j = require('neo4j-driver')
 const driver = neo4j.driver('bolt://minifiednd.com:7687', neo4j.auth.basic('neo4j', 'goblinMonkeyBaby'))
 
@@ -41,6 +42,8 @@ RETURN c3 AS creature
     }
 }
 
+
+// HELPER FUNCTIONS
 function randomSubset(array, size) {
     let used = [], subset = [], index;
     const arrayLength = array.length;
@@ -74,6 +77,7 @@ async function QueryGraph(query, params, onComplete) {
     session.close();
 }
 
+// COMPONENTS
 function  WorldbuildingSteps() {
     const [selectedBiomeIndex, setSelectedBiomeIndex] = React.useState(null);
     const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
