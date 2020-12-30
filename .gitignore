@@ -21,6 +21,13 @@
 # ides
 /src/assets/.idea
 
+# assets
+/src/assets/Neo4jGraph/CSVs
+/src/assets/Neo4jGraph/MinifiedCreateGraphScript.cypher
+/src/assets/Neo4jGraph/neo4j.LICENCE.txt
+/src/assets/Neo4jGraph/UpdateGraphScripts/credentials.json
+/src/assets/Neo4jGraph/UpdateGraphScripts/__pycache__
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

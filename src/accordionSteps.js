@@ -83,5 +83,5 @@ SingleStep.defaultProps = {
     onMount: () => {}
 }
 
-export { EntityList }
+export { EntityList, SingleStep }
 export default SingleStep;

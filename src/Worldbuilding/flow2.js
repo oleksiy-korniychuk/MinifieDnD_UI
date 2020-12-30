@@ -1,12 +1,11 @@
 import React from 'react';
-import './index.css';
+import '../index.css';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import SingleStep from './accordionSteps';
-import { EntityList } from './accordionSteps';
+import { EntityList, SingleStep } from '../accordionSteps';
 
 // NEO4J DRIVER
 const neo4j = require('neo4j-driver')
@@ -42,7 +41,6 @@ RETURN c3 AS creature
     }
 }
 
-
 // HELPER FUNCTIONS
 function randomSubset(array, size) {
     let used = [], subset = [], index;
@@ -77,8 +75,7 @@ async function QueryGraph(query, params, onComplete) {
     session.close();
 }
 
-// COMPONENTS
-function  WorldbuildingSteps() {
+function Flow2() {
     const [selectedBiomeIndex, setSelectedBiomeIndex] = React.useState(null);
     const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
     const [biomeListExpanded, setBiomeListExpanded] = React.useState(true);
@@ -190,16 +187,4 @@ function  WorldbuildingSteps() {
     );
 }
 
-function WorldbuildingPage() {  
-    return (
-        <React.StrictMode>
-            <Grid container justify="center">
-                <Grid item sm={10}>
-                    <WorldbuildingSteps/>
-                </Grid>
-            </Grid>
-        </React.StrictMode>
-    );
-}
-
-export default WorldbuildingPage;
+export { Flow2 };
