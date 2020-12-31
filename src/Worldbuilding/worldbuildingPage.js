@@ -1,7 +1,7 @@
 import React from 'react';
 import '../index.css';
 import Grid from '@material-ui/core/Grid';
-import { Flow2 } from './flow2';
+import { Flow2 } from './Flow2';
 
 // NEO4J DRIVER
 const neo4j = require('neo4j-driver')

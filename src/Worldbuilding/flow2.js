@@ -5,7 +5,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { EntityList, SingleStep } from '../accordionSteps';
+import { EntityList, SingleStep } from '../Shared/AccordionSteps';
 
 // NEO4J DRIVER
 const neo4j = require('neo4j-driver')
