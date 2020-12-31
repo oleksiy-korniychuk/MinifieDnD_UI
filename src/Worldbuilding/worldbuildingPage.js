@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../index.css';
 import Grid from '@material-ui/core/Grid';
-import { Flow2 } from './Flow2';
+//import { Flow2 } from './Flow2';
+import {
+    Router,
+    Switch,
+    Route
+} from "react-router-dom";
 
+const axios = require('axios').default;
 // NEO4J DRIVER
 const neo4j = require('neo4j-driver')
 const driver = neo4j.driver('bolt://minifiednd.com:7687', neo4j.auth.basic('neo4j', 'goblinMonkeyBaby'))
@@ -57,36 +63,41 @@ function randomSubset(array, size) {
     return subset;
 }
 
-async function QueryGraph(query, params, onComplete) {
-    const session = driver.session();
-    //const tx = session.beginTransaction();
-
-    const tx1 = session
-        .run(query, params)
-        .then((results) => {
-            return results.records;
-        });
-
-    //await tx.commit();
-    onComplete(await tx1);
-    session.close();
-}
-
 // COMPONENTS
 function  WorldbuildingSteps() {
-    <Router history={history}>
-          <Switch>
-            <Route exact path="/worldbuilding">
-              <Flow2 />
-            </Route>
-            <Route path="/worldbuilding/flow2">
-              <WorldbuildingPage/>
-            </Route>
-            <Route path="/character">
-              <CharacterPage/>
-            </Route>
-          </Switch>
-        </Router>
+    return (
+        <div>
+            <Switch>
+                <Route exact path="/worldbuilding">
+                    <Flow2 />
+                </Route>
+                <Route path="/worldbuilding/flow2">
+                    <h>TEST FLOW2</h>
+                </Route>
+            </Switch>
+        </div>
+    );
+}
+
+function Flow2() {
+    const [biomes, setBiomes] = React.useState([]);
+
+    useEffect(async () => {
+        const fetchData = async () => {
+            const result = await axios(
+                "http://minifiednd.com:8880/minifiednd_api/allBiomes",
+            );
+            setBiomes(result.data);
+        };
+
+        fetchData();
+    }, []);
+
+    return (
+        <div>
+            {biomes.map(biome => <h1>{biome.name}</h1>)}
+        </div>
+    );
 }
 
 function WorldbuildingPage() {  

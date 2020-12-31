@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import '../index.css';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';

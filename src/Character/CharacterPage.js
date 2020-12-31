@@ -1,7 +1,7 @@
 import React from 'react';
-import './index.css';
-import testImage2 from './assets/DND_Art5.png';
-import testImage3 from './assets/DND_Art8.png';
+import '../index.css';
+import testImage2 from '../assets/DND_Art5.png';
+import testImage3 from '../assets/DND_Art8.png';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
