@@ -15,6 +15,11 @@ function Flow2() {
     const [selectedBiome, setSelectedBiome] = React.useState("");
     const [selectedLocation, setSelectedLocation] = React.useState("");
 
+    const submitBiome = (biome) => {
+        setSelectedBiome(biome);
+        setSelectedLocation("");
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios(
@@ -50,7 +55,7 @@ function Flow2() {
 
     return (
         <div>
-            <BiomeList biomes={biomes} set={setSelectedBiome}/>
+            <BiomeList biomes={biomes} set={submitBiome}/>
             {selectedBiome}
             <LocationList locations={locations} set={setSelectedLocation} />
             {selectedLocation}
@@ -92,6 +97,10 @@ function BiomeList(props) {
 
 function LocationList(props) {
     const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
+
+    useEffect(() => {
+        setSelectedLocationIndex(null);
+    }, [props.locations]);
 
     const setLocation = () => {
         props.set(props.locations[selectedLocationIndex].name);
