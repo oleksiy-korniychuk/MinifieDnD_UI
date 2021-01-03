@@ -1,67 +1,19 @@
 import React, { useEffect } from 'react';
 import '../index.css';
 import Grid from '@material-ui/core/Grid';
-//import { Flow2 } from './Flow2';
 import {
-    Router,
     Switch,
     Route
 } from "react-router-dom";
-
-const axios = require('axios').default;
-// NEO4J DRIVER
-const neo4j = require('neo4j-driver')
-const driver = neo4j.driver('bolt://minifiednd.com:7687', neo4j.auth.basic('neo4j', 'goblinMonkeyBaby'))
+import { EntityList, SingleStep } from '../Shared/AccordionSteps';
+import { Accordion, AccordionDetails, AccordionSummary, AccordionActions } from '@material-ui/core';
+import { Typography, Divider, Button } from '@material-ui/core'
 
 // CONSTANTS
+const axios = require('axios').default;
 const NUM_BIOMES = 5;
 const NUM_LOCATIONS = 3;
 const NUM_CREATURES = 5;
-const queries = {
-    creatureStart: {
-        creatures: '',
-        locations: '',
-        biomes: '',
-        result: ''
-    },
-    biomeStart: {
-        biomes: `MATCH (biome:Biome) RETURN biome`,
-        locations: `MATCH (location:Location)-[:IS_IN]->(:Biome {name: $biome}) RETURN location`,
-        result: `
-MATCH (c1:Creature)-[:LIVES_IN]->(location:Location {name: $location})-[:IS_IN]->(biome:Biome {name: $biome})
-RETURN c1 AS creature
-UNION MATCH (c2:Creature)-[:LIVES_IN]->(location:Location {name: $location})
-RETURN c2 AS creature
-UNION MATCH (c3:Creature)-[:LIVES_IN]->(biome:Biome {name: $biome})
-RETURN c3 AS creature
-        `
-    },
-    locationStart: {
-        locations: '',
-        biomes: '',
-        result: ''
-    }
-}
-
-
-// HELPER FUNCTIONS
-function randomSubset(array, size) {
-    let used = [], subset = [], index;
-    const arrayLength = array.length;
-    if(size > arrayLength) {
-        console.log("ERROR: subset cannot be longer than array", array.length, size);
-        return;
-    }
-    while(size > 0) {
-        do {
-            index = Math.floor(arrayLength*Math.random());
-        } while(used.includes(index));
-        used.push(index);
-        subset.push(array[index]);
-        size--;
-    }
-    return subset;
-}
 
 // COMPONENTS
 function  WorldbuildingSteps() {
@@ -81,8 +33,11 @@ function  WorldbuildingSteps() {
 
 function Flow2() {
     const [biomes, setBiomes] = React.useState([]);
+    const [locations, setLocations] = React.useState([]);
+    const [selectedBiome, setSelectedBiome] = React.useState("");
+    const [selectedLocation, setSelectedLocation] = React.useState("");
 
-    useEffect(async () => {
+    useEffect(() => {
         const fetchData = async () => {
             const result = await axios(
                 "http://minifiednd.com:8880/minifiednd_api/allBiomes",
@@ -93,9 +48,84 @@ function Flow2() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await axios(
+                "http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome,
+            );
+            setLocations(result.data);
+        };
+
+        fetchData();
+    }, [selectedBiome]);
+
     return (
         <div>
-            {biomes.map(biome => <h1>{biome.name}</h1>)}
+            <BiomeList biomes={biomes} set={setSelectedBiome}/>
+            {selectedBiome}
+            <LocationList locations={locations} set={setSelectedLocation} />
+            {selectedLocation}
+        </div>
+    );
+}
+
+function BiomeList(props) {
+    const [selectedBiomeIndex, setSelectedBiomeIndex] = React.useState(null);
+
+    const setBiome = () => {
+        props.set(props.biomes[selectedBiomeIndex].name);
+    }
+
+
+    return (
+        <div>
+            <Accordion>
+                <AccordionSummary>
+                    <Typography>Select A Biome ...</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <EntityList items={props.biomes.map((biome) => biome.name)} onSelect={setSelectedBiomeIndex} selectedIndex={selectedBiomeIndex}/>
+                </AccordionDetails>
+                <Divider />
+                <AccordionActions>
+                    <Button
+                        size="small"
+                        color="primary"
+                        onClick={setBiome}
+                        disabled={false}
+                    >Submit</Button>
+                </AccordionActions>
+            </Accordion>
+        </div>
+    );
+}
+
+function LocationList(props) {
+    const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
+
+    const setLocation = () => {
+        props.set(props.locations[selectedLocationIndex].name);
+    }
+
+    return (
+        <div>
+            <Accordion>
+                <AccordionSummary>
+                    <Typography>Select A Location ...</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <EntityList items={props.locations.map((location) => location.name)} onSelect={setSelectedLocationIndex} selectedIndex={selectedLocationIndex}/>
+                </AccordionDetails>
+                <Divider />
+                <AccordionActions>
+                    <Button
+                        size="small"
+                        color="primary"
+                        onClick={setLocation}
+                        disabled={false}
+                    >Submit</Button>
+                </AccordionActions>
+            </Accordion>
         </div>
     );
 }
