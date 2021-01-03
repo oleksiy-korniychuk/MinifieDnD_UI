@@ -87,7 +87,7 @@ function BiomeList(props) {
                         size="small"
                         color="primary"
                         onClick={setBiome}
-                        disabled={false}
+                        disabled={selectedBiomeIndex === null}
                     >Submit</Button>
                 </AccordionActions>
             </Accordion>
@@ -126,7 +126,7 @@ function LocationList(props) {
                         size="small"
                         color="primary"
                         onClick={setLocation}
-                        disabled={false}
+                        disabled={selectedLocationIndex === null}
                     >Submit</Button>
                 </AccordionActions>
             </Accordion>
