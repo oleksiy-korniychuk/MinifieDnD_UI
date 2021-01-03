@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import '../index.css';
-import { EntityList, SingleStep } from '../Shared/AccordionSteps';
+import { EntityList } from '../Shared/AccordionSteps';
 import { Accordion, AccordionDetails, AccordionSummary, AccordionActions } from '@material-ui/core';
 import { Typography, Divider, Button } from '@material-ui/core'
+import Grid from '@material-ui/core/Grid';
 
 // CONSTANTS
 const axios = require('axios').default;
@@ -14,6 +15,7 @@ function Flow2() {
     const [creatures, setCreatures] = React.useState([]);
     const [selectedBiome, setSelectedBiome] = React.useState("");
     const [selectedLocation, setSelectedLocation] = React.useState("");
+    const [componentDidMount, setComponentDidMount] = React.useState(false);
 
     const submitBiome = (biome) => {
         setSelectedBiome(biome);
@@ -28,6 +30,7 @@ function Flow2() {
             setBiomes(result.data);
         };
 
+        setComponentDidMount(true);
         fetchData();
     }, []);
 
@@ -39,7 +42,8 @@ function Flow2() {
             setLocations(result.data);
         };
 
-        fetchData();
+        if(componentDidMount)
+            fetchData();
     }, [selectedBiome]);
 
     useEffect(() => {
@@ -50,25 +54,35 @@ function Flow2() {
             setCreatures(result.data);
         };
 
-        fetchData();
-    }, [selectedBiome, selectedLocation]);
+        if(componentDidMount)
+            fetchData();
+    }, [selectedLocation]);
 
     return (
         <div>
-            <BiomeList biomes={biomes} set={submitBiome}/>
-            {selectedBiome}
-            <LocationList locations={locations} set={setSelectedLocation} />
-            {selectedLocation}
-            <CreatureList creatures={creatures} />
+            <Grid container spacing={1}>
+                <Grid item sm={6}>
+                    <BiomeList biomes={biomes} set={submitBiome} />
+                </Grid>
+                <Grid item sm={6}>
+                    <LocationList locations={locations} set={setSelectedLocation} />
+                </Grid>
+                <Grid item sm={12}>
+                    <CreatureList creatures={creatures} />
+                </Grid>
+            </Grid>
         </div>
     );
 }
 
 function BiomeList(props) {
     const [selectedBiomeIndex, setSelectedBiomeIndex] = React.useState(null);
+    const [selectedBiome, setSelectedBiome] = React.useState("");
 
     const setBiome = () => {
-        props.set(props.biomes[selectedBiomeIndex].name);
+        let newName = props.biomes[selectedBiomeIndex].name;
+        setSelectedBiome(newName);
+        props.set(newName);
     }
 
 
@@ -76,7 +90,7 @@ function BiomeList(props) {
         <div>
             <Accordion>
                 <AccordionSummary>
-                    <Typography>Select A Biome ...</Typography>
+                    <Typography>Select A Biome: {selectedBiome}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <EntityList items={props.biomes.map((biome) => biome.name)} onSelect={setSelectedBiomeIndex} selectedIndex={selectedBiomeIndex}/>
@@ -97,20 +111,23 @@ function BiomeList(props) {
 
 function LocationList(props) {
     const [selectedLocationIndex, setSelectedLocationIndex] = React.useState(null);
+    const [selectedLocation, setSelectedLocation] = React.useState("");
 
     useEffect(() => {
         setSelectedLocationIndex(null);
     }, [props.locations]);
 
     const setLocation = () => {
-        props.set(props.locations[selectedLocationIndex].name);
+        let newName = props.locations[selectedLocationIndex].name;
+        props.set(newName);
+        setSelectedLocation(newName);
     }
 
     return (
         <div>
             <Accordion>
                 <AccordionSummary>
-                    <Typography>Select A Location ...</Typography>
+                    <Typography>Select A Location: {selectedLocation}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <EntityList items={props.locations.map((location) => location.name)} onSelect={setSelectedLocationIndex} selectedIndex={selectedLocationIndex}/>
