@@ -23,47 +23,24 @@ function Flow2() {
         setCreatures([]);
     }
 
-    const fetchData2 = async (endpoint) => {
-        console.log("ENDPOINT: ", endpoint);
+    const fetchData = async (endpoint, setData) => {
         const result = await axios(endpoint, );
-        console.log(result.data[0].name, " TESTING");
+        setData(result.data);
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                "http://minifiednd.com:8880/minifiednd_api/allBiomes",
-            );
-            setBiomes(result.data);
-        };
-
         setComponentDidMount(true);
-        fetchData();
-        //fetchData2("http://minifiednd.com:8880/minifiednd_api/allBiomes");
+        fetchData("http://minifiednd.com:8880/minifiednd_api/allBiomes", setBiomes);
     }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                "http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome,
-            );
-            setLocations(result.data);
-        };
-
         if(componentDidMount)
-            fetchData();
+            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome, setLocations);
     }, [selectedBiome]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                "http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome + "&location=" + selectedLocation,
-            );
-            setCreatures(result.data);
-        };
-
-        if(componentDidMount)
-            fetchData();
+        if(componentDidMount && selectedLocation !== "")
+            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome + "&location=" + selectedLocation, setCreatures);
     }, [selectedLocation]);
 
     return (
