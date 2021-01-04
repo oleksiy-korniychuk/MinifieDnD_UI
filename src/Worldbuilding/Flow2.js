@@ -20,6 +20,13 @@ function Flow2() {
     const submitBiome = (biome) => {
         setSelectedBiome(biome);
         setSelectedLocation("");
+        setCreatures([]);
+    }
+
+    const fetchData2 = async (endpoint) => {
+        console.log("ENDPOINT: ", endpoint);
+        const result = await axios(endpoint, );
+        console.log(result.data[0].name, " TESTING");
     }
 
     useEffect(() => {
@@ -32,6 +39,7 @@ function Flow2() {
 
         setComponentDidMount(true);
         fetchData();
+        //fetchData2("http://minifiednd.com:8880/minifiednd_api/allBiomes");
     }, []);
 
     useEffect(() => {
