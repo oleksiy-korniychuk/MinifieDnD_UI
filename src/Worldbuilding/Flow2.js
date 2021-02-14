@@ -7,6 +7,9 @@ import Grid from '@material-ui/core/Grid';
 
 // CONSTANTS
 const axios = require('axios').default;
+const NUM_BIOMES = 5;
+const NUM_LOCATIONS = 8;
+const NUM_CREATURES = 20;
 
 // COMPONENTS
 function Flow2() {
@@ -35,12 +38,12 @@ function Flow2() {
 
     useEffect(() => {
         if(componentDidMount)
-            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome, setLocations);
+            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome + "&random=" + NUM_LOCATIONS, setLocations);
     }, [selectedBiome]);
 
     useEffect(() => {
         if(componentDidMount && selectedLocation !== "")
-            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome + "&location=" + selectedLocation, setCreatures);
+            fetchData("http://minifiednd.com:8880/minifiednd_api/flow2?biome=" + selectedBiome + "&location=" + selectedLocation + "&random=" + NUM_CREATURES, setCreatures);
     }, [selectedLocation]);
 
     return (

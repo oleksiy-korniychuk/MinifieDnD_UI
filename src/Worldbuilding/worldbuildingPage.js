@@ -7,12 +7,6 @@ import {
 } from "react-router-dom";
 import { Flow2 } from "./Flow2"
 
-// CONSTANTS
-const axios = require('axios').default;
-const NUM_BIOMES = 5;
-const NUM_LOCATIONS = 3;
-const NUM_CREATURES = 5;
-
 // COMPONENTS
 function  WorldbuildingSteps() {
     return (
