@@ -21,10 +21,10 @@ jobs:
       - name: Deploy NodeJS app
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ secrets.CAN_SSH_HOST }}
+          port: ${{ secrets.CAN_SSH_PORT }}
+          username: ${{ secrets.CAN_SSH_USERNAME }}
+          password: ${{ secrets.CAN_SSH_PASSWORD }}
           script: |
             cd /home/containers/MinifieDnD/app/
             git pull
