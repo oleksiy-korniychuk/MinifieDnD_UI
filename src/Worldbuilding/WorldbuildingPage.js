@@ -5,7 +5,7 @@ import {
     Switch,
     Route
 } from "react-router-dom";
-import { Flow2 } from "./Flow2"
+import { Flow2, Flow2_Redesign } from "./Flow2"
 
 // COMPONENTS
 function  WorldbuildingSteps() {
@@ -16,7 +16,7 @@ function  WorldbuildingSteps() {
                     <Flow2 />
                 </Route>
                 <Route path="/worldbuilding/flow2">
-                    <h>TEST FLOW2</h>
+                    <Flow2_Redesign />
                 </Route>
             </Switch>
         </div>
