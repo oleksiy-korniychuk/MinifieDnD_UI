@@ -34,7 +34,8 @@ class SeparateOutData:
                 creature = row[Name]
                 myid = row[Id]
                 for biome in biomes:
-                    writer.writerow([myid, creature, biome])
+                    if len(biome):
+                        writer.writerow([myid, creature, biome])
 
     @staticmethod
     def _creature_location(inF, outF):
@@ -48,10 +49,11 @@ class SeparateOutData:
                 creature = row[Name]
                 myid = row[Id]
                 for index, location in enumerate(locations):
-                    try:
-                        writer.writerow([myid, creature, location, exclusives[index]])
-                    except:
-                        print(creature + ',' + location)
+                    if len(location):
+                        try:
+                            writer.writerow([myid, creature, location, exclusives[index]])
+                        except:
+                            print(creature + ',' + location)
 
     @staticmethod
     def _creature_type(inF, outF):
@@ -88,3 +90,6 @@ class SeparateOutData:
         self._creature_location(creature_input_file, creature_location_file)
         self._creature_type(creature_input_file, creature_type_file)
         self._location_biome(location_input_file, location_biome_file)
+
+#sep = SeparateOutData()
+#sep.separate_out_data();

@@ -17,7 +17,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import CharacterPage from './Character/CharacterPage';
-import WorldbuildingPage from './Worldbuilding/WorldbuildingPage';
+import WorldbuildingPage from './Worldbuilding/worldbuildingPage';
 import {
   Router,
   Switch,
