@@ -152,7 +152,6 @@ function Flow2_Redesign() {
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    className={classes.backButton}
                   >
                     Back
                   </Button>
